@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" class="private search-ui">
+  <head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src chrome: blob:" />
+    <link rel="icon" type="image/png" href="chrome://browser/skin/privatebrowsing/favicon.svg" />
+    <link rel="stylesheet" href="chrome://browser/content/aboutPrivateBrowsing.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="chrome://browser/skin/privatebrowsing/aboutPrivateBrowsing.css" type="text/css" media="all" />
+    <script type="application/javascript" src="chrome://browser/content/aboutPrivateBrowsing.js"></script>
+    <script type="application/javascript" src="chrome://browser/content/contentSearchUI.js"></script>
+  </head>
+
+  <body dir="ltr" style="--newtab-search-icon:url(blob:null/4c35fcc5-ea27-4212-b68d-2400e023ab01);">
+    <p class="showNormal">You are currently not in a private window.</p>
+    <button id="startPrivateBrowsing" class="showNormal" accesskey="P">Open a Private Window</button>
+    <div class="showPrivate dontShowSearch container">
+      <h1 class="title">
+        <span id="title">Private Browsing</span>
+      </h1>
+      <section class="section-main">
+        <p>When you browse in a Private Window, Firefox <strong>does not save</strong>:</p>
+        <ul class="list-row">
+          <li>visited pages</li>
+          <li>cookies</li>
+          <li>searches</li>
+          <li>temporary files</li>
+        </ul>
+        <p>Firefox <strong>will save</strong> your:</p>
+        <ul class="list-row">
+          <li>bookmarks</li>
+          <li>downloads</li>
+          <li>copied text</li>
+        </ul>
+        <p>Private Browsing <strong>doesn’t make you anonymous</strong> on the Internet. Your employer or Internet service provider can still know what page you visit.</p>
+      </section>
+
+      <h2 id="tpSubHeader" class="about-subheader">
+        <span id="cbTitle">Content Blocking</span>
+      </h2>
+
+      <section id="tpSection" class="section-main">
+        <p id="cbDescription">Some websites use trackers that can 
+monitor your activity across the Internet. In private windows, Firefox 
+Content Blocking automatically blocks many trackers that can collect 
+information about your browsing behavior.</p>
+        <p>
+          <a id="startTour" class="button" href="https://www.mozilla.org/en-US/firefox/66.0.2/content-blocking/start/?variation=1">See how it works</a>
+        </p>
+      </section>
+
+      <section class="section-main">
+        <p class="about-info">Learn more about <a id="learnMore" target="_blank" href="https://support.mozilla.org/1/firefox/66.0.2/Linux/en-US/private-browsing">Private Browsing</a>.</p>
+      </section>
+    </div>
+    <div class="showPrivate showSearch container">
+      <div class="logo-and-wordmark">
+        <div class="logo"></div>
+        <div class="wordmark"></div>
+      </div>
+      <div class="search-inner-wrapper">
+        <button id="search-handoff-button" class="search-handoff-button" title="Search the Web" tabindex="-1">
+          <div class="fake-textbox">Search the Web</div>
+          <input id="fake-editable" class="fake-editable" tabindex="-1" aria-hidden="true" />
+          <div class="fake-caret"></div>
+        </button>
+        <input id="dummy-input" class="dummy-input" type="search" autocomplete="off" aria-autocomplete="true" aria-controls="searchSuggestionTable" aria-expanded="false" />
+      <table id="searchSuggestionTable" class="contentSearchSuggestionTable" role="presentation" hidden=""><tr class="contentSearchHeaderRow"><td class="contentSearchHeader" id="contentSearchDefaultEngineHeader"><img src="blob:null/4c35fcc5-ea27-4212-b68d-2400e023ab01" />Google Search</td></tr><tr class="contentSearchSuggestionsContainer"><td class="contentSearchSuggestionsContainer"><table class="contentSearchSuggestionsList" role="listbox"></table></td></tr><table class="contentSearchOneOffsTable contentSearchSuggestionsContainer" role="group"><tr class="contentSearchHeaderRow"><td class="contentSearchHeader" id="contentSearchSearchWithHeader"><label>Search with:</label><label class="contentSearchSearchWithHeaderSearchText"></label><label></label></td></tr></table><button class="contentSearchSettingsButton contentSearchHeaderRow contentSearchHeader" id="contentSearchSettingsButton" aria-selected="false">Change Search Settings</button></table></div>
+      <div class="info">
+        <h1>You’re in a Private Window</h1>
+        <p>
+          Firefox clears your search and browsing history when you quit 
+the app or close all Private Browsing tabs and windows. While this 
+doesn’t make you anonymous to websites or your internet service 
+provider, it makes it easier to keep what you do online private from 
+anyone else who uses this computer.
+          <br />
+          <a id="private-browsing-myths" href="https://support.mozilla.org/1/firefox/66.0.2/Linux/en-US/private-browsing-myths">Common myths about private browsing</a>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
