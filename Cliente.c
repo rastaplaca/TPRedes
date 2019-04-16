@@ -10,8 +10,8 @@
 #include <sys/socket.h> 
 #include <unistd.h>
 
-#define PORT 5000          /* the port client will be connecting to */
-#define MAXDATASIZE 1024 /* max number of bytes we can get at once */
+#define PORT 80         /* the port client will be connecting to */
+#define MAXDATASIZE 5000 /* max number of bytes we can get at once */
 
 int sendMessage(const char *message, int sockfd){
     if (send(sockfd, message, strlen(message), 0) == -1){
@@ -64,9 +64,10 @@ int main(int argc, char *argv[]){
     }
     
     if(get[0]=='\0'){
-        strcat(get, "GET /index.html");
-        strcat(filename, "index.html");
+        strcat(get, "GET /"); 
+        strcat(filename, "index.html"); 
     }
+
     else{
         int barcount2=0;
         i = 0;
@@ -74,23 +75,26 @@ int main(int argc, char *argv[]){
             if(get[i]=='/'){
                 barcount2++;
             }
-
             i++;
-        }
-        
+        }  
         j=0;
-
         while(i<strlen(get)){
             filename[j] = get[i];
 
             j++;
             i++;
-        }
-         
-        
+        }  
     }
-
+    
     strcat(get, "\n");
+    strcat(get, "HTTP/1.1\r\n");
+    strcat(get, "Host: ");
+    strcat(get, url);
+    strcat(get, "\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\nUser-Agent: TPRedes (X11; Linux x86_64)\r\n"
+    "Accept: text/html\r\nAccept-Encoding: deflate\r\n"
+    "Accept-Language: en-US,en;q=0.9,pt-BR;q=0.8,pt;q=0.7\r\n\r\n");
+    printf("\n\n%s\n", get);
+    
 
     if ((he=gethostbyname(url)) == NULL) {  /* get the host info */
         herror("gethostbyname");
@@ -117,34 +121,32 @@ int main(int argc, char *argv[]){
     sendMessage(get, sockfd);
 
     FILE *fp;
-    fp = fopen(filename,"w+");
+    fp = fopen(filename,"wb+");
 
     int numbytes = 1;
     char buf[MAXDATASIZE];
     int first = 1;
     
-    while(numbytes!=0){
+    while(1==1){
+        memset (buf, '\0',MAXDATASIZE);
 
-        memset (buf,'\0',MAXDATASIZE);
-        
         if ((numbytes=recv(sockfd, buf, MAXDATASIZE, 0)) == -1) {
             perror("recv");
             return 1;
 	    }
+        if(numbytes==0)
+            break;
+        
         if(first){
-            char *data = strstr( buf, "\r\n\r\n" );
-            if ( data != NULL )
-                data += 4;
-
-            //fwrite(data,MAXDATASIZE,numbytes,fp);
-            fprintf(fp,"%s",data);
+            char *data = strstr( buf, "\r\n\r\n" )+4*sizeof(char);
+            fwrite(data,sizeof(char),strlen(data),fp);
             first = 0;
         }
-        else
-            //fwrite(buf,MAXDATASIZE,numbytes,fp);
-            fprintf(fp,"%s",buf);
+        else{
+            fwrite(buf,sizeof(char),numbytes,fp);
+        }
     }
-    
+
     fclose(fp);
     close(sockfd);
 }

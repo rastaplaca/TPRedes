@@ -97,7 +97,7 @@ int main(int argc, char **argv) {
     
     i = 5;
     j = 0;
-    while(i<(strlen(buf)-1)){
+    while(buf[i]!=' '){
         file[j] = buf[i];
 
         i++;
@@ -108,11 +108,12 @@ int main(int argc, char **argv) {
     fp = fopen(file,"rb");
 
     if(fp == NULL){
-      char message[] = "HTTP/1.0 404 OK\r\n\r\n";
+      char message[] = "HTTP/1.1 404 \r\n\r\n";
       send(childfd, message, strlen(message), 0);
     }
     else{
-        char message[] = "HTTP/1.0 200 OK\r\n\r\n";
+        
+        char message[] = "HTTP/1.1 200 OK\r\n\r\n";
         char c;
 
         send(childfd, message, strlen(message), 0);
