@@ -1,13 +1,13 @@
 /*code based on http://www.cs.tau.ac.il/~eddiea/samples/IOMultiplexing/TCP-client.c.html*/
-    
-#include <stdio.h> 
-#include <stdlib.h> 
-#include <errno.h> 
-#include <string.h> 
-#include <netdb.h> 
-#include <sys/types.h> 
-#include <netinet/in.h> 
-#include <sys/socket.h> 
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <string.h>
+#include <netdb.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
 #include <unistd.h>
 
 #define PORT 80         /* the port client will be connecting to */
@@ -35,18 +35,18 @@ int main(int argc, char *argv[]){
         printf("usage: %s LINK\n",argv[0]);
         exit(1);
     }
-    
+
     int i;
     int j;
 
     memset (url,'\0',MAXDATASIZE);
     memset (get,'\0',MAXDATASIZE);
     memset (filename,'\0',MAXDATASIZE);
-    
+
     i=0;
     while(argv[1][i] != '\0' && argv[1][i] !='/' && i<strlen(argv[1])){
         url[i] = argv[1][i];
-        i++;  
+        i++;
     }
 
     if(i<strlen(argv[1]) && argv[1][i] == '/'){
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]){
         strcat(get, "GET ");
         while(i<strlen( argv[1])){
             get[j] = argv[1][i];
-            
+
             if(argv[1][i]=='/')
                 barcount++;
 
@@ -62,10 +62,10 @@ int main(int argc, char *argv[]){
             j++;
         }
     }
-    
+
     if(get[0]=='\0'){
-        strcat(get, "GET /"); 
-        strcat(filename, "index.html"); 
+        strcat(get, "GET /");
+        strcat(filename, "index.html");
     }
 
     else{
@@ -76,25 +76,25 @@ int main(int argc, char *argv[]){
                 barcount2++;
             }
             i++;
-        }  
+        }
         j=0;
         while(i<strlen(get)){
             filename[j] = get[i];
 
             j++;
             i++;
-        }  
+        }
     }
-    
-    strcat(get, "\n");
-    strcat(get, "HTTP/1.1\r\n");
+
+    //strcat(get, "\n");
+    strcat(get, " HTTP/1.1\r\n");
     strcat(get, "Host: ");
     strcat(get, url);
     strcat(get, "\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\nUser-Agent: TPRedes (X11; Linux x86_64)\r\n"
     "Accept: text/html\r\nAccept-Encoding: deflate\r\n"
     "Accept-Language: en-US,en;q=0.9,pt-BR;q=0.8,pt;q=0.7\r\n\r\n");
     printf("\n\n%s\n", get);
-    
+
 
     if ((he=gethostbyname(url)) == NULL) {  /* get the host info */
         herror("gethostbyname");
@@ -113,11 +113,11 @@ int main(int argc, char *argv[]){
 
     if (connect(sockfd, (struct sockaddr *)&their_addr,
                          sizeof(struct sockaddr)) == -1){
-        
+
         perror("connect");
         exit(1);
     }
-    
+
     sendMessage(get, sockfd);
 
     FILE *fp;
@@ -126,7 +126,7 @@ int main(int argc, char *argv[]){
     int numbytes = 1;
     char buf[MAXDATASIZE];
     int first = 1;
-    
+
     while(1==1){
         memset (buf, '\0',MAXDATASIZE);
 
@@ -136,7 +136,7 @@ int main(int argc, char *argv[]){
 	    }
         if(numbytes==0)
             break;
-        
+
         if(first){
             char *data = strstr( buf, "\r\n\r\n" )+4*sizeof(char);
             fwrite(data,sizeof(char),strlen(data),fp);
