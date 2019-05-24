@@ -9,9 +9,12 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #define PORT 80         /* the port client will be connecting to */
-#define MAXDATASIZE 5000 /* max number of bytes we can get at once */
+#define MAXDATASIZE 1024 /* max number of bytes we can get at once */
 
 int sendMessage(const char *message, int sockfd){
     if (send(sockfd, message, strlen(message), 0) == -1){
@@ -35,6 +38,8 @@ int main(int argc, char *argv[]){
         printf("usage: %s LINK\n",argv[0]);
         exit(1);
     }
+    
+    
 
     int i;
     int j;
@@ -85,17 +90,21 @@ int main(int argc, char *argv[]){
             i++;
         }
     }
+    
+    struct stat st = {0};
 
-    //strcat(get, "\n");
+    if (stat(url, &st) == -1) {
+        mkdir(url, 0700);
+    }
+
     strcat(get, " HTTP/1.1\r\n");
     strcat(get, "Host: ");
     strcat(get, url);
     strcat(get, "\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\nUser-Agent: TPRedes (X11; Linux x86_64)\r\n"
     "Accept: text/html\r\nAccept-Encoding: deflate\r\n"
     "Accept-Language: en-US,en;q=0.9,pt-BR;q=0.8,pt;q=0.7\r\n\r\n");
-    printf("\n\n%s\n", get);
 
-
+    
     if ((he=gethostbyname(url)) == NULL) {  /* get the host info */
         herror("gethostbyname");
         exit(1);
@@ -119,9 +128,15 @@ int main(int argc, char *argv[]){
     }
 
     sendMessage(get, sockfd);
+    
+    char compleFileName[MAXDATASIZE*2];
+    memset (compleFileName,'\0',MAXDATASIZE*2);
+    strcat(compleFileName, url);
+    strcat(compleFileName, "/");
+    strcat(compleFileName, filename);
 
     FILE *fp;
-    fp = fopen(filename,"wb+");
+    fp = fopen(compleFileName,"wb");
 
     int numbytes = 1;
     char buf[MAXDATASIZE];
@@ -129,8 +144,9 @@ int main(int argc, char *argv[]){
 
     while(1==1){
         memset (buf, '\0',MAXDATASIZE);
+        numbytes=recv(sockfd, buf, MAXDATASIZE, 0);
 
-        if ((numbytes=recv(sockfd, buf, MAXDATASIZE, 0)) == -1) {
+        if (numbytes == -1) {
             perror("recv");
             return 1;
 	    }
@@ -139,7 +155,9 @@ int main(int argc, char *argv[]){
 
         if(first){
             char *data = strstr( buf, "\r\n\r\n" )+4*sizeof(char);
-            fwrite(data,sizeof(char),strlen(data),fp);
+            int data_size = numbytes - (data - buf);
+            
+            fwrite(data,sizeof(char),data_size,fp);
             first = 0;
         }
         else{

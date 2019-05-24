@@ -1,5 +1,3 @@
-
-
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -108,37 +106,38 @@ int main(int argc, char **argv) {
     fp = fopen(file,"rb");
 
     if(fp == NULL){
-      char message[] = "HTTP/1.1 404 \r\n\r\n";
+      char message[] = "HTTP/1.1 404 Not Found\r\n\r\n Erro 404: Arquivo nao encontrado!";
       send(childfd, message, strlen(message), 0);
     }
     else{
-        
         char message[] = "HTTP/1.1 200 OK\r\n\r\n";
         char c;
-
+        int dataSize;
         send(childfd, message, strlen(message), 0);
         
-        i=0;
-        memset (buf,'\0',BUFSIZE);
-        while((c = fgetc(fp)) != EOF){
-              buf[i] = c;
-              i++;
-              if(i==BUFSIZE-1){
-                  send(childfd, buf, BUFSIZE, 0);
-                  memset (buf,'\0',BUFSIZE);
-
-                  i=0;  
-              }
-        }
+        dataSize=0;
+        while(!feof(fp)){
+			      fgetc(fp);
+			      dataSize++;
+		    }
         
-        if(i==0){
-          send(childfd, NULL, 0, 0);
+        rewind(fp);
+        j=0;
+        for (i = 0; i < dataSize; i++){
+		        buf[j] = fgetc(fp);
+            j++;
+
+            if(j==BUFSIZE){
+              j=0;
+
+              send(childfd, buf, BUFSIZE, 0);
+            }
+	      }
+
+        if(j!=0){
+            send(childfd, buf, j-1, 0);
         }
-        else{
-          
-          send(childfd, buf, i, 0); 
-          send(childfd, NULL, 0, 0);
-        }
+
         fclose(fp);
     }
 
